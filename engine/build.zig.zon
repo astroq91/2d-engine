@@ -1,0 +1,12 @@
+.{
+    .name = .engine,
+    .version = "0.16.0",
+    .dependencies = .{
+        .glfw_zig = .{
+            .url = "git+https://github.com/tiawl/glfw.zig#291e4e1d26089530a3b8031fab07bc618e91f701",
+            .hash = "glfw_zig-1.0.0-NrvYoyvRGQDgKTTvaAaJLZWQsL6AL5F8jGsBla2V275Y",
+        },
+    },
+    .paths = .{""},
+    .fingerprint = 0xe8a81a8d5e89eb52,
+}

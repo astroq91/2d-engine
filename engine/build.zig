@@ -20,7 +20,13 @@ pub fn build(b: *std.Build) void {
         .root_source_file = b.path("../lib/vk.zig"),
     });
 
+    const glfw = b.dependency("glfw_zig", .{
+        .target = target,
+        .optimize = optimize
+    }).artifact("glfw");
+
+    lib.root_module.linkLibrary(glfw);
+    lib.root_module.addIncludePath(glfw.getEmittedIncludeTree());
     lib.root_module.addImport("vulkan", vk_mod);
-    lib.root_module.linkSystemLibrary("glfw", .{});
     b.installArtifact(lib);
 }

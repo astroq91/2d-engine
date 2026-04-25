@@ -1,5 +1,6 @@
 const c = @import("c.zig");
 const vk = @import("vulkan");
+const std = @import("std");
 
 pub fn init() !void {
     if (c.glfwInit() != c.GLFW_TRUE) return error.GlfwInitFailed;
@@ -15,5 +16,7 @@ pub fn init() !void {
         null
     ) orelse return error.WindowInitFailed;
     defer c.glfwDestroyWindow(window);
+
+    std.debug.print("Window initialized!", .{});
     while (true) {}
 }
