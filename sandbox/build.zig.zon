@@ -1,0 +1,16 @@
+.{
+    .name = .sandbox,
+    .version = "0.0.0",
+    .fingerprint = 0xe6eaf1675ccdac2f, 
+    .minimum_zig_version = "0.16.0-dev.3142+5ccfeb926",
+    .dependencies = .{
+        .engine = .{
+            .path = "../engine"
+        }
+    },
+    .paths = .{
+        "build.zig",
+        "build.zig.zon",
+        "src",
+    },
+}
