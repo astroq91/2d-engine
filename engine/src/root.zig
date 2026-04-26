@@ -1,22 +1,9 @@
-const c = @import("c.zig");
 const vk = @import("vulkan");
 const std = @import("std");
+const window = @import("window.zig").Window;
 
 pub fn init() !void {
-    if (c.glfwInit() != c.GLFW_TRUE) return error.GlfwInitFailed;
-    defer c.glfwTerminate();
-
-    const extent = vk.Extent2D{ .width = 800, .height = 600 };
-    c.glfwWindowHint(c.GLFW_CLIENT_API, c.GLFW_NO_API);
-    const window = c.glfwCreateWindow(
-        @intCast(extent.width),
-        @intCast(extent.height),
-        "Engine",
-        null,
-        null
-    ) orelse return error.WindowInitFailed;
-    defer c.glfwDestroyWindow(window);
-
-    std.debug.print("Window initialized!", .{});
+    var win = try window.init();
+    defer win.deinit();
     while (true) {}
 }
