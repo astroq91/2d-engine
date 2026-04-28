@@ -18,7 +18,7 @@ pub const Window = struct {
             null
         ) orelse return error.WindowInitFailed;
 
-        std.debug.print("Window initialized!", .{});
+        std.debug.print("Window initialized\n", .{});
         return self;
     }
 

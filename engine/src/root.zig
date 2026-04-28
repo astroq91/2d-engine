@@ -1,9 +1,13 @@
 const vk = @import("vulkan");
 const std = @import("std");
-const window = @import("window.zig").Window;
+const Window = @import("window.zig").Window;
+const GraphicsContext = @import("graphics_context.zig").GraphicsContext;
+const Allocator = std.mem.Allocator;
 
-pub fn init() !void {
-    var win = try window.init();
-    defer win.deinit();
+pub fn init(allocator: Allocator) !void {
+    var window = try Window.init();
+    defer window.deinit();
+    var graphics_context = try GraphicsContext.init(allocator, "engine", window.handle);
+    defer graphics_context.deinit();
     while (true) {}
 }
