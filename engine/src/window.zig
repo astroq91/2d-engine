@@ -26,4 +26,16 @@ pub const Window = struct {
         c.glfwTerminate();
         c.glfwDestroyWindow(self.handle);
     }
+
+    pub fn width(self: *const Window) u32 {
+        var w: c_int = undefined;
+        c.glfwGetFramebufferSize(self.handle, &w, null);
+        return @intCast(w);
+    }
+
+    pub fn height(self: *const Window) u32 {
+        var h: c_int = undefined;
+        c.glfwGetFramebufferSize(self.handle, null, &h);
+        return @intCast(h);
+    }
 };

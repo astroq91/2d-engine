@@ -2,6 +2,7 @@ const vk = @import("vulkan");
 const std = @import("std");
 const Window = @import("window.zig").Window;
 const GraphicsContext = @import("graphics_context.zig").GraphicsContext;
+const Swapchain = @import("swapchain.zig").Swapchain;
 const Allocator = std.mem.Allocator;
 
 pub fn init(allocator: Allocator) !void {
@@ -9,5 +10,6 @@ pub fn init(allocator: Allocator) !void {
     defer window.deinit();
     var graphics_context = try GraphicsContext.init(allocator, "engine", window.handle);
     defer graphics_context.deinit();
+
     while (true) {}
 }

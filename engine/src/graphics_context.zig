@@ -50,6 +50,7 @@ pub const GraphicsContext = struct {
     pdev: vk.PhysicalDevice,
     props: vk.PhysicalDeviceProperties,
     mem_props: vk.PhysicalDeviceMemoryProperties,
+    surface_capabilities: vk.SurfaceCapabilitiesKHR,
 
     dev: Device,
     graphics_queue: Queue,
@@ -121,6 +122,7 @@ pub const GraphicsContext = struct {
         const candidate = try pickPhysicalDevice(self.instance, allocator, self.surface);
         self.pdev = candidate.pdev;
         self.props = candidate.props;
+        self.surface_capabilities = candidate.capabilities;
 
         const dev = try initializeCandidate(self.instance, candidate);
 
@@ -248,6 +250,7 @@ fn initializeCandidate(instance: Instance, candidate: DeviceCandidate) !vk.Devic
 const DeviceCandidate = struct {
     pdev: vk.PhysicalDevice,
     props: vk.PhysicalDeviceProperties,
+    capabilities: vk.SurfaceCapabilitiesKHR,
     queues: QueueAllocation,
 };
 
@@ -300,9 +303,11 @@ fn checkSuitable(
 
     if (try allocateQueues(instance, pdev, allocator, surface)) |allocation| {
         const props = instance.getPhysicalDeviceProperties(pdev);
+        const capabilities = instance.getPhysicalDeviceSurfaceCapabilitiesKHR(pdev, surface);
         return DeviceCandidate{
             .pdev = pdev,
             .props = props,
+            .capabilities = capabilities,
             .queues = allocation,
         };
     }

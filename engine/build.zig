@@ -17,7 +17,7 @@ pub fn build(b: *std.Build) void {
     const vk_mod = b.addModule("vulkan", .{
         .target = target,
         .optimize = optimize,
-        .root_source_file = b.path("../lib/vk.zig"),
+        .root_source_file = b.path("lib/vk.zig"),
     });
 
     const glfw = b.dependency("glfw_zig", .{
