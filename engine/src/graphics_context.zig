@@ -184,6 +184,7 @@ fn checkLayerSupport(vkb: *const BaseWrapper, alloc: Allocator) !bool {
                 break;
             }
         } else {
+            std.debug.print("{s}", .{required_layer});
             return false;
         }
     }
