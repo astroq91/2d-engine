@@ -304,7 +304,7 @@ fn checkSuitable(
 
     if (try allocateQueues(instance, pdev, allocator, surface)) |allocation| {
         const props = instance.getPhysicalDeviceProperties(pdev);
-        const capabilities = instance.getPhysicalDeviceSurfaceCapabilitiesKHR(pdev, surface);
+        const capabilities = try instance.getPhysicalDeviceSurfaceCapabilitiesKHR(pdev, surface);
         return DeviceCandidate{
             .pdev = pdev,
             .props = props,

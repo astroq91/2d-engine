@@ -10,6 +10,9 @@ pub fn init(allocator: Allocator, update_fn: *const fn () void) !void {
     defer window.deinit();
     var graphics_context = try GraphicsContext.init(allocator, "engine", window.handle);
     defer graphics_context.deinit();
+
+    const swapchain = try Swapchain.init(&graphics_context, allocator, &window);
+    defer swapchain.deinit();
     while (true) {
         update_fn();
     }
