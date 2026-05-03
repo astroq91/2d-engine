@@ -12,14 +12,27 @@ pub const Swapchain = struct {
     handle: vk.SwapchainKHR,
     images: []vk.Image,
     image_views: []vk.ImageView,
-    depth_imagei: vk.Image,
+    depth_image: Image,
     pub fn init(gc: *const GraphicsContext, allocator: Allocator, window: *const Window) !Swapchain {
         var self: Swapchain = undefined;
         self.gc = gc;
         self.allocator = allocator;
 
-        self.handle = try createSwapchain(gc, window); 
+        const surface_caps = gc.surface_capabilities;
+        const extent: vk.Extent2D = 
+            if (surface_caps.current_extent.width == std.math.maxInt(u32) and
+                surface_caps.current_extent.height == std.math.maxInt(u32)) 
+                vk.Extent2D {
+                    .width = window.width(),
+                    .height = window.height(),
+                }
+            else 
+                gc.surface_capabilities.current_extent;
+
+        self.handle = try createSwapchain(gc, extent); 
         self.images = try gc.dev.getSwapchainImagesAllocKHR(self.handle, allocator);
+
+        self.depth_image = try createDepthImage(gc, extent);
 
         return self;
     }
@@ -29,22 +42,13 @@ pub const Swapchain = struct {
         self.allocator.free(self.images);
 
         self.gc.dev.destroySwapchainKHR(self.handle, null);
+        self.depth_image.deinit();
     }
 
 };
 
-fn createSwapchain(gc: *const GraphicsContext, window: *const Window) !vk.SwapchainKHR {
+fn createSwapchain(gc: *const GraphicsContext, extent: vk.Extent2D) !vk.SwapchainKHR {
     const surface_caps = gc.surface_capabilities;
-    const extent: vk.Extent2D = 
-        if (surface_caps.current_extent.width == std.math.maxInt(u32) and
-            surface_caps.current_extent.height == std.math.maxInt(u32)) 
-            vk.Extent2D {
-                .width = window.width(),
-                .height = window.height(),
-            }
-         else 
-            gc.surface_capabilities.current_extent;
-        
 
     const image_format = vk.Format.b8g8r8a8_srgb;
     const info = vk.SwapchainCreateInfoKHR {
@@ -70,8 +74,9 @@ fn createSwapchain(gc: *const GraphicsContext, window: *const Window) !vk.Swapch
 fn createDepthImage(gc: *const GraphicsContext, extent: vk.Extent2D) !Image {
     const info = vk.ImageCreateInfo {
         .image_type = .@"2d",
-        .format = pickDepthFormat(gc),
-        .extent = extent,
+        .format = try pickDepthFormat(gc),
+        .sharing_mode = .exclusive,
+        .extent = .{ .width = extent.width, .height = extent.height, .depth = 1 },
         .mip_levels = 1,
         .array_layers = 1,
         .samples = .{ .@"1_bit" = true },
@@ -80,13 +85,13 @@ fn createDepthImage(gc: *const GraphicsContext, extent: vk.Extent2D) !Image {
         .initial_layout = .undefined,
     };
 
-    return try Image.init(gc, info);
+    return try Image.init(gc, &info, .{.device_local_bit = true});
 }
 
 fn pickDepthFormat(gc: *const GraphicsContext) !vk.Format {
     const formats = [_]vk.Format{ vk.Format.d32_sfloat_s8_uint, vk.Format.d24_unorm_s8_uint }; 
     for (formats) |format| {
-        const props: vk.FormatProperties2 = undefined;
+        var props: vk.FormatProperties2 = undefined;
         gc.instance.getPhysicalDeviceFormatProperties2(gc.pdev, format, &props);
         if (props.format_properties.optimal_tiling_features.depth_stencil_attachment_bit) {
             return format;

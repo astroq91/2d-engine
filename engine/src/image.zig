@@ -4,12 +4,12 @@ const Allocator = std.mem.Allocator;
 const vk = @import("vulkan");
 const vk_utils = @import("vulkan_utils.zig");
 
-const Image = struct {
+pub const Image = struct {
     gc: *const GraphicsContext,
 
     handle: vk.Image,
     memory: vk.DeviceMemory,
-    pub fn init(gc: *const GraphicsContext, info: *const vk.ImageCreateInfo, properties: *const vk.MemoryPropertyFlags) !Image {
+    pub fn init(gc: *const GraphicsContext, info: *const vk.ImageCreateInfo, properties: vk.MemoryPropertyFlags) !Image {
         var self: Image = undefined;
         self.gc = gc;
 
