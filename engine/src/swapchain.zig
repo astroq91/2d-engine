@@ -19,7 +19,7 @@ pub const Swapchain = struct {
         self.allocator = allocator;
 
         self.handle = try createSwapchain(gc, window); 
-        self.images = return try gc.dev.getSwapchainImagesAllocKHR(self.handle, allocator);
+        self.images = try gc.dev.getSwapchainImagesAllocKHR(self.handle, allocator);
 
         return self;
     }
@@ -60,7 +60,7 @@ fn createSwapchain(gc: *const GraphicsContext, window: *const Window) !vk.Swapch
         },
         .image_array_layers = 1,
         .image_usage = .{ .color_attachment_bit = true },
-        .pre_transform = .{ .inherit_bit_khr = true },
+        .pre_transform = .{ .identity_bit_khr = true },
         .composite_alpha = .{ .opaque_bit_khr = true },
         .present_mode = .fifo_khr,
     };

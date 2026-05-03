@@ -137,7 +137,7 @@ pub const GraphicsContext = struct {
 
         self.mem_props = self.instance.getPhysicalDeviceMemoryProperties(self.pdev);
 
-        std.debug.print("Graphics context initialized", .{});
+        std.debug.print("Graphics context initialized\n", .{});
 
         return self;
     }
