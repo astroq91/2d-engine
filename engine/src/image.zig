@@ -20,7 +20,7 @@ pub const Image = struct {
             .memory_type_index = try vk_utils.findMemoryType(gc, requirements.memory_type_bits, properties),
         };
         self.memory = try gc.dev.allocateMemory(&alloc_info, null);
-        gc.dev.bindImageMemory(self.handle, self.memory, 0);
+        try gc.dev.bindImageMemory(self.handle, self.memory, 0);
 
         return self;
     }

@@ -91,7 +91,9 @@ fn createDepthImage(gc: *const GraphicsContext, extent: vk.Extent2D) !Image {
 fn pickDepthFormat(gc: *const GraphicsContext) !vk.Format {
     const formats = [_]vk.Format{ vk.Format.d32_sfloat_s8_uint, vk.Format.d24_unorm_s8_uint }; 
     for (formats) |format| {
-        var props: vk.FormatProperties2 = undefined;
+        var props: vk.FormatProperties2 = .{
+            .format_properties = .{}
+        };
         gc.instance.getPhysicalDeviceFormatProperties2(gc.pdev, format, &props);
         if (props.format_properties.optimal_tiling_features.depth_stencil_attachment_bit) {
             return format;
